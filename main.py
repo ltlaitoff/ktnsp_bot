@@ -100,18 +100,18 @@ async def check_lessons():
                                 text += f'Додадкова інфа: "<code>{row["Additional Text"]}</code>"\n'
                             if not pd.isna(row["Meeting Link"]) and row["Meeting Link"] != "Null":
                                 text += f'Посилання на зустріч: <a href="{row["Meeting Link"]}">{row["Meeting Link"]}</a>\n'
-                            await send_lesson_notification(chat_id=-657080651, lesson=row, time_start=time_start, time_end=time_end, text=text)
+                            await send_lesson_notification(chat_id=-1001971949292, lesson=row, time_start=time_start, time_end=time_end, text=text)
                             sent_notifications.add(lesson_key)
                             print(sent_notifications)
                             break
-        await asyncio.sleep(5)
+        await asyncio.sleep(20)
 
 # -1001971949292
 loop.create_task(check_lessons())
 
 @dp.message_handler(commands=['nextlesson'])
 async def next_lesson(message: types.Message):
-    now = datetime.now()#.replace(hour=11, minute=50, second=0, microsecond=0)
+    now = datetime.now()
     week_day = datetime.now().isoweekday()
     current_year = datetime.now().year
     current_month = datetime.now().month
@@ -145,7 +145,7 @@ async def next_lesson(message: types.Message):
                         subject = row['Subject']
                     if current_lesson is not None and next_lesson is not None:
                         break
-        if next_lesson is not None:
+        if next_lesson is not None and (not pd.isna(next_lesson["Subject"]) and next_lesson["Subject"] != "Null"):
             text = (
                 f'Наступна пара: "<code>{next_lesson["Subject"]}</code>"\n'
                 f'Викладач: <code>{next_lesson["Teacher"]}</code>\n'
@@ -167,13 +167,13 @@ async def next_lesson(message: types.Message):
                 text += f'Telegram: {next_lesson["telegram"]}\n'
             await message.answer(text, parse_mode='HTML', disable_web_page_preview=True)
             print("Відправлено наступне повідомлення")
-        elif current_lesson is not None:
+        elif current_lesson is not None and (not pd.isna(current_lesson["Subject"]) and current_lesson["Subject"] != "Null"):
             text = (
                 f'Зараз пара: "<code>{subject}</code>"\n'
                 f'Викладач: <code>{current_lesson["Teacher"]}</code>\n'
                 f'Час: {time_start_current} - {time_end_current}\n'
             )
-            if not pd.isna(current_lesson["Type_lesson"]) and current_lesson["Type_lesson"] != "Null":
+            if not pd.isna(next_lesson["Type_lesson"]) and next_lesson["Type_lesson"] != "Null":
                 text += f'Тип пари: "<code>{next_lesson["Type_lesson"]}</code>"\n'
             if not pd.isna(current_lesson["Additional Text"]) and current_lesson["Additional Text"] != "Null":
                 text += f'Додаткова інформація: "<code>{current_lesson["Additional Text"]}</code>"\n'
@@ -192,6 +192,7 @@ async def next_lesson(message: types.Message):
         else:
             await message.answer('Сьогодні пар більше не має.')
             print("Пар більше не має")
+
 
 @dp.message_handler(commands=['daily_schedule'])
 async def daily_schedule(message: types.Message):
