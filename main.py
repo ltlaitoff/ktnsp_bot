@@ -6,21 +6,16 @@ from aiogram.contrib.middlewares.logging import LoggingMiddleware
 from aiogram.utils import executor
 from dotenv import load_dotenv
 from os import getenv
-
 load_dotenv()
 
 API_TOKEN = getenv("API_TOKEN")
 bot = Bot(token=API_TOKEN)
 dp = Dispatcher(bot)
 loop = asyncio.get_event_loop()
-
-# Путь к CSV-файлу с расписанием
 schedule_file_path = 's.csv'
 sent_notifications = set()
-# Загружаем текущее расписание в DataFrame
 df = pd.read_csv(schedule_file_path)
 
-# Расписание звонков в виде списка кортежей (начало, конец)
 lesson_times = [
     ('08:30', '09:50'),
     ('10:05', '11:25'),
@@ -105,8 +100,6 @@ async def check_lessons():
                             print(sent_notifications)
                             break
         await asyncio.sleep(20)
-
-# -1001971949292
 loop.create_task(check_lessons())
 
 @dp.message_handler(commands=['nextlesson'])
@@ -221,7 +214,7 @@ async def week_schedule(message: types.Message):
     week_day = datetime.now().isoweekday()
     if week_day in df['Day of the week'].tolist():
         is_even_week = get_week_number()
-        week_schedule_text = f"Розклад на тиждень({'Знаменник' if is_even_week else 'Чисельник'}):\n\n"
+        week_schedule_text = f"Розклад на цей тиждень({'Знаменник' if is_even_week else 'Чисельник'}):\n\n"
         for day in range(1, 7):
             day_name = get_day_name(day)
             todays_schedule = df[df['Day of the week'] == day]
@@ -244,16 +237,6 @@ async def week_schedule(message: types.Message):
 def get_day_name(day):
     day_names = ['Понеділок', 'Вівторок', 'Середа', 'Четвер', "П'ятниця", 'Субота']
     return day_names[day - 1]
-
-async def main():
-    current_week_number = get_week_number()
-    now = datetime.now()
-    week_day = now.strftime('%A')
-    current_time = now.strftime('%H:%M')
-    print(f"Текущая неделя: {'Знаменатель' if current_week_number == 0 else 'Числитель'}")
-    print(f"День недели: {week_day}")
-    print(f"Текущее время: {current_time}")
-    print(f"================================")
 
 if __name__ == '__main__':
     # asyncio.run(main())
