@@ -6,7 +6,7 @@ from aiogram import Bot, Dispatcher
 load_dotenv()
 
 # 'dev' | 'prod'
-MODE = 'dev'
+MODE = 'prod'
 
 
 BOT_TOKEN = getenv("BOT_TOKEN")
