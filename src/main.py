@@ -6,9 +6,8 @@ from aiogram.contrib.middlewares.logging import LoggingMiddleware
 from aiogram.utils import executor
 from dotenv import load_dotenv
 from os import getenv
-from config import bot, dp, schedule_file_path, lesson_times, CHAT_ID
+from config import bot, dp, schedule_file_path, lesson_times, CHAT_ID, DAY_NAMES
 from helpers.get_week_number import get_week_number
-from helpers.get_day_name import get_day_name
 load_dotenv()
 
 loop = asyncio.get_event_loop()
@@ -85,30 +84,31 @@ async def check_lessons():
                 (time_difference <= timedelta(minutes=5))
                 and (time_start > current_time)
                 and (not pd.isna(subject) and subject != "Null")
-                and (not pd.isna(row['Type']) and row['Type'] != "Null")
-                and (('Ч' in row['Type'] and current_week_number == 0) or ('З' in row['Type'] and current_week_number == 1))
+                and (not pd.isna(row['type']) and row['type'] != "Null")
+                and (('Ч' in row['type'] and current_week_number == 0) or ('З' in row['type'] and current_week_number == 1))
             ):
                 lesson_key = f"{week_day}_{period}"
 
-                if lesson_key not in sent_notifications:
-                    text_for_send = get_lesson_message(
-                        time_start,
-                        time_end,
-                        subject,
-                        row['teacher'],
-                        row['type_lesson'],
-                        row['additional_text'],
-                        row['meeting_link'],
-                        row['zoom_code'],
-                        row['zoom_password'],
-                        row['email'],
-                        row['telegram'],
-                    )
+                if lesson_key in sent_notifications:
+                    continue
 
-                    await bot.send_message(chat_id=chat_id, text=text_for_send, parse_mode='HTML', disable_web_page_preview=True)
-                    sent_notifications.add(lesson_key)
-                    print(sent_notifications)
-                    break
+                text_for_send = get_lesson_message(
+                    time_start,
+                    time_end,
+                    subject,
+                    row['teacher'],
+                    row['type_lesson'],
+                    row['additional_text'],
+                    row['meeting_link'],
+                    row['zoom_code'],
+                    row['zoom_password'],
+                    row['email'],
+                    row['telegram'],
+                )
+
+                await bot.send_message(chat_id=chat_id, text=text_for_send, parse_mode='HTML', disable_web_page_preview=True)
+                sent_notifications.add(lesson_key)
+                break
 
         await asyncio.sleep(20)
 
@@ -116,81 +116,60 @@ async def check_lessons():
 @dp.message_handler(commands=['nextlesson'])
 async def next_lesson(message: types.Message):
     now = datetime.now()
-    week_day = now.isoweekday()
+    week_day = datetime.now().isoweekday()
     current_year = now.year
     current_month = now.month
     current_day = now.day
-    current_week_number = int(get_week_number())
+    is_even_week = get_week_number()
 
     if not week_day in data['day_of_the_week'].tolist():
         return
 
     todays_schedule = data[data['day_of_the_week'] == week_day]
-    current_lesson = None
-    next_lesson = None
-    time_start_current = ""
-    time_end_current = ""
-    time_start_next = ""
-    time_end_next = ""
-    subject = ""
+    lesson = None
 
     for _, row in todays_schedule.iterrows():
+        if lesson is not None:
+            break
+
         period = row['period']
-        if period >= 1 and period <= len(lesson_times):
-            time_start, time_end = lesson_times[period - 1]
-            start_datetime = datetime(
-                current_year, current_month, current_day, *map(int, time_start.split(':')))
-            end_datetime = datetime(
-                current_year, current_month, current_day, *map(int, time_end.split(':')))
-            if (('Ч' in str(row['Type']) and current_week_number == 0) or ('З' in str(row['Type']) and current_week_number == 1)):
-                if current_lesson is None and now >= start_datetime and now <= end_datetime:
-                    current_lesson = row
-                    time_start_current = time_start
-                    time_end_current = time_end
-                    subject = row['subject']
-                if next_lesson is None and now <= start_datetime:
-                    next_lesson = row
-                    time_start_next = time_start
-                    time_end_next = time_end
-                    subject = row['subject']
-                if current_lesson is not None and next_lesson is not None:
-                    break
-    if next_lesson is not None and (not pd.isna(next_lesson["subject"]) and next_lesson["subject"] != "Null"):
+        lesson_type = str(row['type'])
+
+        time_start, time_end = lesson_times[period - 1]
+        start_datetime = datetime(
+            current_year, current_month, current_day, *map(int, time_start.split(':')))
+        end_datetime = datetime(
+            current_year, current_month, current_day, *map(int, time_end.split(':')))
+
+        if (
+            (not is_even_week and 'З' in lesson_type) or
+            (is_even_week and 'Ч' in lesson_type and not 'З' in lesson_type) or
+            not pd.notna(row["subject"])
+        ):
+            continue
+
+        if lesson is None and (now >= start_datetime and now <= end_datetime or now <= start_datetime):
+            lesson = row
+
+    if lesson is not None and (not pd.isna(lesson["subject"]) and lesson["subject"] != "Null"):
         text_for_send = get_lesson_message(
             time_start,
             time_end,
-            next_lesson['subject'],
-            next_lesson['teacher'],
-            next_lesson['type_lesson'],
-            next_lesson['additional_text'],
-            next_lesson['meeting_link'],
-            next_lesson['zoom_code'],
-            next_lesson['zoom_password'],
-            next_lesson['email'],
-            next_lesson['telegram'],
-        )
-        await message.answer(text_for_send, parse_mode='HTML', disable_web_page_preview=True)
-        print("Відправлено наступне повідомлення")
-    elif current_lesson is not None and (not pd.isna(current_lesson["subject"]) and current_lesson["subject"] != "Null"):
-        text_for_send = get_lesson_message(
-            time_start,
-            time_end,
-            current_lesson['subject'],
-            current_lesson['teacher'],
-            current_lesson['type_lesson'],
-            current_lesson['additional_text'],
-            current_lesson['meeting_link'],
-            current_lesson['zoom_code'],
-            current_lesson['zoom_password'],
-            current_lesson['email'],
-            current_lesson['telegram'],
+            lesson['subject'],
+            lesson['teacher'],
+            lesson['type_lesson'],
+            lesson['additional_text'],
+            lesson['meeting_link'],
+            lesson['zoom_code'],
+            lesson['zoom_password'],
+            lesson['email'],
+            lesson['telegram'],
         )
 
         await message.answer(text_for_send, parse_mode='HTML', disable_web_page_preview=True)
-        print("Відправлено поточне повідомлення")
-    else:
-        await message.answer('Сьогодні пар більше не має.')
-        print("Пар більше не має")
+        return
+
+    await message.answer('Сьогодні пар більше не має.')
 
 
 @dp.message_handler(commands=['daily_schedule'])
@@ -203,18 +182,18 @@ async def daily_schedule(message: types.Message):
 
     todays_schedule = data[data['day_of_the_week'] == week_day]
     is_even_week = get_week_number()
-    schedule_text = f"Розклад на сьогодні ({'Чисельник' if is_even_week else 'Знаменник'}):\n"
+    schedule_text = f"Розклад на сьогодні ({'Знаменник' if is_even_week else 'Чисельник'}):\n"
+
     for _, row in todays_schedule.iterrows():
-        period = row['period']
-        if period >= 1 and period <= len(lesson_times):
-            time_start, time_end = lesson_times[period - 1]
-            subject = row['subject']
-            type_lesson = row['type_lesson']
-            lesson_type = row['Type']
-            if pd.notna(type_lesson) and pd.notna(subject):
-                if ('Ч' in lesson_type and is_even_week) or ('З' in lesson_type and not is_even_week):
-                    lesson_type_text = "Чисельник" if is_even_week else "Знаменник"
-                    schedule_text += f'{time_start} - {time_end}: {type_lesson} {subject}\n'
+        time_start, time_end = lesson_times[row['period'] - 1]
+
+        subject = row['subject']
+        type_lesson = row['type_lesson']
+        lesson_type = row['type']
+        if pd.notna(type_lesson) and pd.notna(subject):
+            if ('Ч' in lesson_type and is_even_week) or ('З' in lesson_type and not is_even_week):
+                lesson_type_text = "Чисельник" if is_even_week else "Знаменник"
+                schedule_text += f'{time_start} - {time_end}: {type_lesson} {subject}\n'
     await message.answer(schedule_text)
 
 
@@ -227,25 +206,30 @@ async def week_schedule(message: types.Message):
         return
 
     is_even_week = get_week_number()
-    week_schedule_text = f"Розклад на цей тиждень({'Знаменник' if is_even_week else 'Чисельник'}):\n\n"
+    week_text = f"Розклад на цей тиждень({'Знаменник' if is_even_week else 'Чисельник'}):\n\n"
 
     for day in range(1, 7):
-        day_name = get_day_name(day)
         todays_schedule = data[data['day_of_the_week'] == day]
-        schedule_text = f"{day_name}:\n"
-        for _, row in todays_schedule.iterrows():
-            period = row['period']
-            if period >= 1 and period <= len(lesson_times):
-                time_start, time_end = lesson_times[period - 1]
-                subject = row['subject']
-                lesson_type = row['Type']
-                type_lesson = row['type_lesson']
-                if (is_even_week and 'З' in lesson_type) or (not is_even_week and 'Ч' in lesson_type):
-                    if pd.notna(subject):
-                        schedule_text += f'{time_start} - {time_end}: {type_lesson} {subject}\n'
-        week_schedule_text += schedule_text + "\n"
+        text = f"{DAY_NAMES[day - 1]}:\n"
 
-    await message.answer(week_schedule_text)
+        for _, row in todays_schedule.iterrows():
+            time_start, time_end = lesson_times[row['period'] - 1]
+            subject = row['subject']
+            lesson_type = row['type']
+            type_lesson = row['type_lesson']
+
+            if (
+                (not is_even_week and 'З' in lesson_type) or
+                (is_even_week and 'Ч' in lesson_type and not 'З' in lesson_type) or
+                not pd.notna(subject)
+            ):
+                continue
+
+            text += f'{time_start} - {time_end}: {type_lesson} {subject}\n'
+
+        week_text += text + "\n"
+
+    await message.answer(week_text)
 
 
 if __name__ == '__main__':
