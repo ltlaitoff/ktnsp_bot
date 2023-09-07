@@ -102,20 +102,20 @@ async def check_lessons():
                     ):
                         lesson_key = f"{week_day}_{period}"
                         if lesson_key not in sent_notifications:
-                            text = (
-                                f'Наступна пара: "<code>{subject}</code>"\n'
-                                f'Тип пари: {row["type_lesson"]}\n'
-                                f'Викладач: {row["teacher"]}\n'
-                                f'Час: {time_start} - {time_end}\n'
-                                f'Ідентифікатор Zoom: {row["zoom_code"]}\n'
-                                f'Пароль Zoom: {row["zoom_password"]}\n'
-                                f'Електронна адреса: {row["email"]}\n'
-                                f'Telegram: {row["telegram"]}\n'
+                            text_for_send = get_lesson_message(
+                                time_start,
+                                time_end,
+                                subject,
+                                row['teacher'],
+                                row['type_lesson'],
+                                row['additional_text'],
+                                row['meeting_link'],
+                                row['zoom_code'],
+                                row['zoom_password'],
+                                row['email'],
+                                row['telegram'],
                             )
-                            if not pd.isna(row["additional_text"]) and row["additional_text"] != "Null":
-                                text += f'Додадкова інфа: "<code>{row["additional_text"]}</code>"\n'
-                            if not pd.isna(row["meeting_link"]) and row["meeting_link"] != "Null":
-                                text += f'Посилання на зустріч: <a href="{row["meeting_link"]}">{row["meeting_link"]}</a>\n'
+
                             await send_lesson_notification(chat_id=CHAT_ID, lesson=row, time_start=time_start, time_end=time_end, text=text)
                             sent_notifications.add(lesson_key)
                             print(sent_notifications)
@@ -163,48 +163,37 @@ async def next_lesson(message: types.Message):
                     if current_lesson is not None and next_lesson is not None:
                         break
         if next_lesson is not None and (not pd.isna(next_lesson["subject"]) and next_lesson["subject"] != "Null"):
-            text = (
-                f'Наступна пара: "<code>{next_lesson["subject"]}</code>"\n'
-                f'Викладач: <code>{next_lesson["teacher"]}</code>\n'
-                f'Час: {time_start_next} - {time_end_next}\n'
+            text_for_send = get_lesson_message(
+                time_start,
+                time_end,
+                next_lesson['subject'],
+                next_lesson['teacher'],
+                next_lesson['type_lesson'],
+                next_lesson['additional_text'],
+                next_lesson['meeting_link'],
+                next_lesson['zoom_code'],
+                next_lesson['zoom_password'],
+                next_lesson['email'],
+                next_lesson['telegram'],
             )
-            if not pd.isna(next_lesson["type_lesson"]) and next_lesson["type_lesson"] != "Null":
-                text += f'Тип пари: "<code>{next_lesson["type_lesson"]}</code>"\n'
-            if not pd.isna(next_lesson["additional_text"]) and next_lesson["additional_text"] != "Null":
-                text += f'Додаткова інформація: "<code>{next_lesson["additional_text"]}</code>"\n'
-            if not pd.isna(next_lesson["meeting_link"]) and next_lesson["meeting_link"] != "Null":
-                text += f'Посилання на зустріч: {next_lesson["meeting_link"]}\n'
-            if not pd.isna(next_lesson["zoom_code"]) and next_lesson["zoom_code"] != "Null":
-                text += f'Ідентифікатор Zoom: {next_lesson["zoom_code"]}\n'
-            if not pd.isna(next_lesson["zoom_password"]) and next_lesson["zoom_password"] != "Null":
-                text += f'Пароль Zoom: {next_lesson["zoom_password"]}\n'
-            if not pd.isna(next_lesson["email"]) and next_lesson["email"] != "Null":
-                text += f'Електронна пошта: {next_lesson["email"]}\n'
-            if not pd.isna(next_lesson["telegram"]) and next_lesson["telegram"] != "Null":
-                text += f'Telegram: {next_lesson["telegram"]}\n'
-            await message.answer(text, parse_mode='HTML', disable_web_page_preview=True)
+            await message.answer(text_for_send, parse_mode='HTML', disable_web_page_preview=True)
             print("Відправлено наступне повідомлення")
         elif current_lesson is not None and (not pd.isna(current_lesson["subject"]) and current_lesson["subject"] != "Null"):
-            text = (
-                f'Зараз пара: "<code>{subject}</code>"\n'
-                f'Викладач: <code>{current_lesson["teacher"]}</code>\n'
-                f'Час: {time_start_current} - {time_end_current}\n'
+            text_for_send = get_lesson_message(
+                time_start,
+                time_end,
+                current_lesson['subject'],
+                current_lesson['teacher'],
+                current_lesson['type_lesson'],
+                current_lesson['additional_text'],
+                current_lesson['meeting_link'],
+                current_lesson['zoom_code'],
+                current_lesson['zoom_password'],
+                current_lesson['email'],
+                current_lesson['telegram'],
             )
-            if not pd.isna(next_lesson["type_lesson"]) and next_lesson["type_lesson"] != "Null":
-                text += f'Тип пари: "<code>{next_lesson["type_lesson"]}</code>"\n'
-            if not pd.isna(current_lesson["additional_text"]) and current_lesson["additional_text"] != "Null":
-                text += f'Додаткова інформація: "<code>{current_lesson["additional_text"]}</code>"\n'
-            if not pd.isna(current_lesson["meeting_link"]) and current_lesson["meeting_link"] != "Null":
-                text += f'Посилання на зустріч: {current_lesson["meeting_link"]}\n'
-            if not pd.isna(current_lesson["zoom_code"]) and current_lesson["zoom_code"] != "Null":
-                text += f'Ідентифікатор Zoom: {current_lesson["zoom_code"]}\n'
-            if not pd.isna(current_lesson["zoom_password"]) and current_lesson["zoom_password"] != "Null":
-                text += f'Пароль Zoom: {current_lesson["zoom_password"]}\n'
-            if not pd.isna(current_lesson["email"]) and current_lesson["email"] != "Null":
-                text += f'Електронна пошта: {current_lesson["email"]}\n'
-            if not pd.isna(current_lesson["telegram"]) and current_lesson["telegram"] != "Null":
-                text += f'Telegram: {current_lesson["telegram"]}\n'
-            await message.answer(text, parse_mode='HTML', disable_web_page_preview=True)
+
+            await message.answer(text_for_send, parse_mode='HTML', disable_web_page_preview=True)
             print("Відправлено поточне повідомлення")
         else:
             await message.answer('Сьогодні пар більше не має.')
