@@ -22,20 +22,28 @@ async def send_lesson_notification(chat_id, lesson, time_start, time_end, text):
         f'Викладач: <code>{lesson["Teacher"]}</code>\n'
         f'Час: {time_start} - {time_end}\n'
     )
+
     if not pd.isna(lesson["Type_lesson"]) and lesson["Type_lesson"] != "Null":
         text += f'Тип пари: "<code>{lesson["Type_lesson"]}</code>"\n'
+
     if not pd.isna(lesson["Additional Text"]) and lesson["Additional Text"] != "Null":
         text += f'Додадкова інфа: "<code>{lesson["Additional Text"]}</code>"\n'
+
     if not pd.isna(lesson["Meeting Link"]) and lesson["Meeting Link"] != "Null":
         text += f'<a href="{lesson["Meeting Link"]}">Посилання на зустріч</a>\n'
+
     if not pd.isna(lesson["zoom_code"]) and lesson["zoom_code"] != "Null":
         text += f'Ідентифікатор Zoom: {lesson["zoom_code"]}\n'
+
     if not pd.isna(lesson["zoom_password"]) and lesson["zoom_password"] != "Null":
         text += f'Пароль Zoom: {lesson["zoom_password"]}\n'
+
     if not pd.isna(lesson["email"]) and lesson["email"] != "Null":
         text += f'Електронна адреса: {lesson["email"]}\n'
+
     if not pd.isna(lesson["telegram"]) and lesson["telegram"] != "Null":
         text += f'Telegram: {lesson["telegram"]}\n'
+
     await bot.send_message(chat_id=chat_id, text=text, parse_mode='HTML', disable_web_page_preview=True)
 
 
@@ -44,6 +52,7 @@ async def check_lessons():
         now = datetime.now()
         week_day = datetime.now().isoweekday()
         current_week_number = get_week_number()
+
         if week_day in [1, 2, 3, 4, 5, 6]:
             todays_schedule = df[df['Day of the week'] == week_day]
             for _, row in todays_schedule.iterrows():
@@ -81,8 +90,8 @@ async def check_lessons():
                             sent_notifications.add(lesson_key)
                             print(sent_notifications)
                             break
+
         await asyncio.sleep(20)
-loop.create_task(check_lessons())
 
 
 @dp.message_handler(commands=['nextlesson'])
@@ -222,4 +231,5 @@ async def week_schedule(message: types.Message):
 
 if __name__ == '__main__':
     # asyncio.run(main())
+    loop.create_task(check_lessons())
     executor.start_polling(dp, skip_updates=True)
