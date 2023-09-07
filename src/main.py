@@ -27,6 +27,8 @@ lesson_times = [
     ('19:45', '21:05'),
 ]
 
+CHAT_ID = -1001971949292
+
 def get_week_number():
     start_date = date(2023, 9, 4)  # Начало учебного года
     today = date.today()
@@ -95,7 +97,7 @@ async def check_lessons():
                                 text += f'Додадкова інфа: "<code>{row["Additional Text"]}</code>"\n'
                             if not pd.isna(row["Meeting Link"]) and row["Meeting Link"] != "Null":
                                 text += f'Посилання на зустріч: <a href="{row["Meeting Link"]}">{row["Meeting Link"]}</a>\n'
-                            await send_lesson_notification(chat_id=-1001971949292, lesson=row, time_start=time_start, time_end=time_end, text=text)
+                            await send_lesson_notification(chat_id=CHAT_ID, lesson=row, time_start=time_start, time_end=time_end, text=text)
                             sent_notifications.add(lesson_key)
                             print(sent_notifications)
                             break
