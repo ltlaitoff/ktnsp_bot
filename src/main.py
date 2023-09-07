@@ -1,16 +1,14 @@
 import asyncio
 import pandas as pd
 from datetime import datetime, timedelta, date
-from aiogram import Bot, Dispatcher, types
+from aiogram import types
 from aiogram.contrib.middlewares.logging import LoggingMiddleware
 from aiogram.utils import executor
 from dotenv import load_dotenv
 from os import getenv
+from config import bot, dp
 load_dotenv()
 
-BOT_TOKEN = getenv("BOT_TOKEN")
-bot = Bot(token=BOT_TOKEN)
-dp = Dispatcher(bot)
 loop = asyncio.get_event_loop()
 schedule_file_path = 'src/data/data.csv'
 sent_notifications = set()

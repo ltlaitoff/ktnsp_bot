@@ -5,6 +5,6 @@ from aiogram import Bot, Dispatcher
 
 load_dotenv()
 
-API_TOKEN = getenv("API_TOKEN")
-bot = Bot(token=API_TOKEN)
+BOT_TOKEN = getenv("BOT_TOKEN")
+bot = Bot(token=BOT_TOKEN)
 dp = Dispatcher(bot)
