@@ -12,7 +12,7 @@ BOT_TOKEN = getenv("BOT_TOKEN")
 bot = Bot(token=BOT_TOKEN)
 dp = Dispatcher(bot)
 loop = asyncio.get_event_loop()
-schedule_file_path = 's.csv'
+schedule_file_path = 'src/data/data.csv'
 sent_notifications = set()
 df = pd.read_csv(schedule_file_path)
 
@@ -27,7 +27,8 @@ lesson_times = [
     ('19:45', '21:05'),
 ]
 
-CHAT_ID = -1001971949292
+# CHAT_ID = -1001971949292
+CHAT_ID = -657080651
 
 
 def get_week_number():
