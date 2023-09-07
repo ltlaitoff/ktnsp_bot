@@ -1,27 +1,18 @@
 import asyncio
 import pandas as pd
-from datetime import datetime, timedelta, date
+from datetime import datetime, timedelta
 from aiogram import types
 from aiogram.contrib.middlewares.logging import LoggingMiddleware
 from aiogram.utils import executor
 from dotenv import load_dotenv
 from os import getenv
 from config import bot, dp, schedule_file_path, lesson_times, CHAT_ID
+from helpers.get_week_number import get_week_number
 load_dotenv()
 
 loop = asyncio.get_event_loop()
 sent_notifications = set()
 df = pd.read_csv(schedule_file_path)
-
-
-def get_week_number():
-    start_date = date(2023, 9, 4)  # Начало учебного года
-    today = date.today()
-    delta = today - start_date
-    days_passed = delta.days
-    week_number = days_passed // 7  # Полное количество недель прошло
-    is_even_week = week_number % 2 == 0  # 0 - знаменатель, 1 - числитель
-    return is_even_week
 
 
 async def send_lesson_notification(chat_id, lesson, time_start, time_end, text):
