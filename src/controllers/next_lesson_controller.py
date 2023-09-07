@@ -1,25 +1,28 @@
 from datetime import datetime
 from config import data, lesson_times
+from helpers.check_week_day_in_data import check_week_day_in_data
+from helpers.get_current_week_day import get_current_week_day
 from helpers.get_lesson_message_by_lesson import get_lesson_message_by_lesson
 import pandas
-from helpers.get_week_number import get_week_number
+from helpers.get_todays_schedule_iterrows import get_todays_schedule_iterrows
+from helpers.check_is_even_week import check_is_even_week
 
 
 def next_lesson_controller():
     now = datetime.now()
-    week_day = datetime.now().isoweekday()
+    week_day = get_current_week_day()
     current_year = now.year
     current_month = now.month
     current_day = now.day
-    is_even_week = get_week_number()
+    is_even_week = check_is_even_week()
 
-    if not week_day in data['day_of_the_week'].tolist():
+    if check_week_day_in_data(week_day):
         return
 
-    todays_schedule = data[data['day_of_the_week'] == week_day]
+    todays_schedule = get_todays_schedule_iterrows(week_day)
     lesson = None
 
-    for _, row in todays_schedule.iterrows():
+    for _, row in todays_schedule:
         if lesson is not None:
             break
 
@@ -27,6 +30,7 @@ def next_lesson_controller():
         lesson_type = str(row['type'])
 
         time_start, time_end = lesson_times[period - 1]
+
         start_datetime = datetime(
             current_year, current_month, current_day, *map(int, time_start.split(':')))
         end_datetime = datetime(

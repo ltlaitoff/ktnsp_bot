@@ -1,16 +1,18 @@
 from datetime import datetime
 import pandas
 from config import DAY_NAMES, data, lesson_times
-from helpers.get_week_number import get_week_number
+from helpers.check_week_day_in_data import check_week_day_in_data
+from helpers.get_current_week_day import get_current_week_day
+from helpers.check_is_even_week import check_is_even_week
 
 
 def week_schedule_controller():
-    week_day = datetime.now().isoweekday()
+    week_day = get_current_week_day()
 
-    if not week_day in data['day_of_the_week'].tolist():
+    if check_week_day_in_data(week_day):
         return 'Розклад на цей тиждень ще не встановлено.'
 
-    is_even_week = get_week_number()
+    is_even_week = check_is_even_week()
     week_text = f"Розклад на цей тиждень({'Знаменник' if is_even_week else 'Чисельник'}):\n\n"
 
     for day in range(1, 7):

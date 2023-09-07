@@ -5,7 +5,7 @@ import pandas
 from config import bot, CHAT_ID, lesson_times, data
 from helpers.get_lesson_message_by_lesson import get_lesson_message_by_lesson
 
-from helpers.get_week_number import get_week_number
+from helpers.check_is_even_week import get_week_number
 
 
 async def check_lessons(sent_notifications):
