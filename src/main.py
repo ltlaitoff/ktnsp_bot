@@ -15,6 +15,26 @@ sent_notifications = set()
 data = pd.read_csv(schedule_file_path)
 
 
+def get_lesson_message_by_lesson(
+    time_start,
+    time_end,
+    lesson
+):
+    return get_lesson_message(
+        time_start,
+        time_end,
+        lesson['subject'],
+        lesson['teacher'],
+        lesson['type_lesson'],
+        lesson['additional_text'],
+        lesson['meeting_link'],
+        lesson['zoom_code'],
+        lesson['zoom_password'],
+        lesson['email'],
+        lesson['telegram'],
+    )
+
+
 def get_lesson_message(
     time_start,
     time_end,
@@ -92,18 +112,10 @@ async def check_lessons():
                 if lesson_key in sent_notifications:
                     continue
 
-                text_for_send = get_lesson_message(
+                text_for_send = get_lesson_message_by_lesson(
                     time_start,
                     time_end,
-                    subject,
-                    row['teacher'],
-                    row['type_lesson'],
-                    row['additional_text'],
-                    row['meeting_link'],
-                    row['zoom_code'],
-                    row['zoom_password'],
-                    row['email'],
-                    row['telegram'],
+                    row
                 )
 
                 await bot.send_message(chat_id=chat_id, text=text_for_send, parse_mode='HTML', disable_web_page_preview=True)
@@ -152,18 +164,10 @@ async def next_lesson(message: types.Message):
             lesson = row
 
     if lesson is not None and (not pd.isna(lesson["subject"]) and lesson["subject"] != "Null"):
-        text_for_send = get_lesson_message(
+        text_for_send = get_lesson_message_by_lesson(
             time_start,
             time_end,
-            lesson['subject'],
-            lesson['teacher'],
-            lesson['type_lesson'],
-            lesson['additional_text'],
-            lesson['meeting_link'],
-            lesson['zoom_code'],
-            lesson['zoom_password'],
-            lesson['email'],
-            lesson['telegram'],
+            lesson
         )
 
         await message.answer(text_for_send, parse_mode='HTML', disable_web_page_preview=True)
