@@ -5,7 +5,6 @@ from aiogram import types
 from aiogram.contrib.middlewares.logging import LoggingMiddleware
 from aiogram.utils import executor
 from dotenv import load_dotenv
-from os import getenv
 from config import bot, dp, schedule_file_path, lesson_times, CHAT_ID, DAY_NAMES
 from helpers.get_week_number import get_week_number
 load_dotenv()
@@ -80,7 +79,7 @@ def get_lesson_message(
 
 async def check_lessons():
     while True:
-        now = datetime.now()
+        now = datetime.now().replace(hour=14, minute=50, second=0, microsecond=0)
         week_day = datetime.now().isoweekday()
         current_week_number = get_week_number()
 
