@@ -8,8 +8,8 @@ from dotenv import load_dotenv
 from os import getenv
 load_dotenv()
 
-API_TOKEN = getenv("API_TOKEN")
-bot = Bot(token=API_TOKEN)
+BOT_TOKEN = getenv("BOT_TOKEN")
+bot = Bot(token=BOT_TOKEN)
 dp = Dispatcher(bot)
 loop = asyncio.get_event_loop()
 schedule_file_path = 's.csv'
