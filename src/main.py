@@ -16,35 +16,65 @@ sent_notifications = set()
 df = pd.read_csv(schedule_file_path)
 
 
-async def send_lesson_notification(chat_id, lesson, time_start, time_end, text):
+def get_lesson_message(
+    time_start,
+    time_end,
+    subject,
+    teacher,
+    type_lesson,
+    additional_text,
+    meeting_link,
+    zoom_code,
+    zoom_password,
+    email,
+    telegram,
+):
     text = (
-        f'Наступна пара: "<code>{lesson["Subject"]}</code>"\n'
-        f'Викладач: <code>{lesson["Teacher"]}</code>\n'
+        f'Наступна пара: "<code>{subject}</code>"\n'
+        f'Викладач: <code>{teacher}</code>\n'
         f'Час: {time_start} - {time_end}\n'
     )
 
-    if not pd.isna(lesson["Type_lesson"]) and lesson["Type_lesson"] != "Null":
-        text += f'Тип пари: "<code>{lesson["Type_lesson"]}</code>"\n'
+    if not pd.isna(type_lesson) and type_lesson != "Null":
+        text += f'Тип пари: "<code>{type_lesson}</code>"\n'
 
-    if not pd.isna(lesson["Additional Text"]) and lesson["Additional Text"] != "Null":
-        text += f'Додадкова інфа: "<code>{lesson["Additional Text"]}</code>"\n'
+    if not pd.isna(additional_text) and additional_text != "Null":
+        text += f'Додадкова інфа: "<code>{additional_text}</code>"\n'
 
-    if not pd.isna(lesson["Meeting Link"]) and lesson["Meeting Link"] != "Null":
-        text += f'<a href="{lesson["Meeting Link"]}">Посилання на зустріч</a>\n'
+    if not pd.isna(meeting_link) and meeting_link != "Null":
+        text += f'<a href="{meeting_link}">Посилання на зустріч</a>\n'
 
-    if not pd.isna(lesson["zoom_code"]) and lesson["zoom_code"] != "Null":
-        text += f'Ідентифікатор Zoom: {lesson["zoom_code"]}\n'
+    if not pd.isna(zoom_code) and zoom_code != "Null":
+        text += f'Ідентифікатор Zoom: {zoom_code}\n'
 
-    if not pd.isna(lesson["zoom_password"]) and lesson["zoom_password"] != "Null":
-        text += f'Пароль Zoom: {lesson["zoom_password"]}\n'
+    if not pd.isna(zoom_password) and zoom_password != "Null":
+        text += f'Пароль Zoom: {zoom_password}\n'
 
-    if not pd.isna(lesson["email"]) and lesson["email"] != "Null":
-        text += f'Електронна адреса: {lesson["email"]}\n'
+    if not pd.isna(email) and email != "Null":
+        text += f'Електронна адреса: {email}\n'
 
-    if not pd.isna(lesson["telegram"]) and lesson["telegram"] != "Null":
-        text += f'Telegram: {lesson["telegram"]}\n'
+    if not pd.isna(telegram) and telegram != "Null":
+        text += f'Telegram: {telegram}\n'
 
-    await bot.send_message(chat_id=chat_id, text=text, parse_mode='HTML', disable_web_page_preview=True)
+    return text
+
+
+async def send_lesson_notification(chat_id, lesson, time_start, time_end, text):
+    text_for_send = get_lesson_message(
+        time_start,
+        time_end,
+        lesson['subject'],
+        lesson['teacher'],
+        lesson['type_lesson'],
+        lesson['additional_text'],
+        lesson['meeting_link'],
+        lesson['zoom_code'],
+        lesson['zoom_password'],
+        lesson['email'],
+        lesson['telegram'],
+    )
+
+    await bot.send_message(chat_id=chat_id, text=text_for_send, parse_mode='HTML', disable_web_page_preview=True)
 
 
 async def check_lessons():
@@ -54,10 +84,10 @@ async def check_lessons():
         current_week_number = get_week_number()
 
         if week_day in [1, 2, 3, 4, 5, 6]:
-            todays_schedule = df[df['Day of the week'] == week_day]
+            todays_schedule = df[df['day_of_the_week'] == week_day]
             for _, row in todays_schedule.iterrows():
-                subject = row['Subject']
-                period = row['Period']
+                subject = row['subject']
+                period = row['period']
                 if period >= 1 and period <= len(lesson_times):
                     time_start, time_end = lesson_times[period - 1]
                     current_time = now.strftime('%H:%M')
@@ -74,18 +104,18 @@ async def check_lessons():
                         if lesson_key not in sent_notifications:
                             text = (
                                 f'Наступна пара: "<code>{subject}</code>"\n'
-                                f'Тип пари: {row["Type_lesson"]}\n'
-                                f'Викладач: {row["Teacher"]}\n'
+                                f'Тип пари: {row["type_lesson"]}\n'
+                                f'Викладач: {row["teacher"]}\n'
                                 f'Час: {time_start} - {time_end}\n'
                                 f'Ідентифікатор Zoom: {row["zoom_code"]}\n'
                                 f'Пароль Zoom: {row["zoom_password"]}\n'
                                 f'Електронна адреса: {row["email"]}\n'
                                 f'Telegram: {row["telegram"]}\n'
                             )
-                            if not pd.isna(row["Additional Text"]) and row["Additional Text"] != "Null":
-                                text += f'Додадкова інфа: "<code>{row["Additional Text"]}</code>"\n'
-                            if not pd.isna(row["Meeting Link"]) and row["Meeting Link"] != "Null":
-                                text += f'Посилання на зустріч: <a href="{row["Meeting Link"]}">{row["Meeting Link"]}</a>\n'
+                            if not pd.isna(row["additional_text"]) and row["additional_text"] != "Null":
+                                text += f'Додадкова інфа: "<code>{row["additional_text"]}</code>"\n'
+                            if not pd.isna(row["meeting_link"]) and row["meeting_link"] != "Null":
+                                text += f'Посилання на зустріч: <a href="{row["meeting_link"]}">{row["meeting_link"]}</a>\n'
                             await send_lesson_notification(chat_id=CHAT_ID, lesson=row, time_start=time_start, time_end=time_end, text=text)
                             sent_notifications.add(lesson_key)
                             print(sent_notifications)
@@ -102,8 +132,8 @@ async def next_lesson(message: types.Message):
     current_month = datetime.now().month
     current_day = datetime.now().day
     current_week_number = int(get_week_number())
-    if week_day in df['Day of the week'].tolist():
-        todays_schedule = df[df['Day of the week'] == week_day]
+    if week_day in df['day_of_the_week'].tolist():
+        todays_schedule = df[df['day_of_the_week'] == week_day]
         current_lesson = None
         next_lesson = None
         time_start_current = ""
@@ -112,7 +142,7 @@ async def next_lesson(message: types.Message):
         time_end_next = ""
         subject = ""
         for _, row in todays_schedule.iterrows():
-            period = row['Period']
+            period = row['period']
             if period >= 1 and period <= len(lesson_times):
                 time_start, time_end = lesson_times[period - 1]
                 start_datetime = datetime(
@@ -124,26 +154,26 @@ async def next_lesson(message: types.Message):
                         current_lesson = row
                         time_start_current = time_start
                         time_end_current = time_end
-                        subject = row['Subject']
+                        subject = row['subject']
                     if next_lesson is None and now <= start_datetime:
                         next_lesson = row
                         time_start_next = time_start
                         time_end_next = time_end
-                        subject = row['Subject']
+                        subject = row['subject']
                     if current_lesson is not None and next_lesson is not None:
                         break
-        if next_lesson is not None and (not pd.isna(next_lesson["Subject"]) and next_lesson["Subject"] != "Null"):
+        if next_lesson is not None and (not pd.isna(next_lesson["subject"]) and next_lesson["subject"] != "Null"):
             text = (
-                f'Наступна пара: "<code>{next_lesson["Subject"]}</code>"\n'
-                f'Викладач: <code>{next_lesson["Teacher"]}</code>\n'
+                f'Наступна пара: "<code>{next_lesson["subject"]}</code>"\n'
+                f'Викладач: <code>{next_lesson["teacher"]}</code>\n'
                 f'Час: {time_start_next} - {time_end_next}\n'
             )
-            if not pd.isna(next_lesson["Type_lesson"]) and next_lesson["Type_lesson"] != "Null":
-                text += f'Тип пари: "<code>{next_lesson["Type_lesson"]}</code>"\n'
-            if not pd.isna(next_lesson["Additional Text"]) and next_lesson["Additional Text"] != "Null":
-                text += f'Додаткова інформація: "<code>{next_lesson["Additional Text"]}</code>"\n'
-            if not pd.isna(next_lesson["Meeting Link"]) and next_lesson["Meeting Link"] != "Null":
-                text += f'Посилання на зустріч: {next_lesson["Meeting Link"]}\n'
+            if not pd.isna(next_lesson["type_lesson"]) and next_lesson["type_lesson"] != "Null":
+                text += f'Тип пари: "<code>{next_lesson["type_lesson"]}</code>"\n'
+            if not pd.isna(next_lesson["additional_text"]) and next_lesson["additional_text"] != "Null":
+                text += f'Додаткова інформація: "<code>{next_lesson["additional_text"]}</code>"\n'
+            if not pd.isna(next_lesson["meeting_link"]) and next_lesson["meeting_link"] != "Null":
+                text += f'Посилання на зустріч: {next_lesson["meeting_link"]}\n'
             if not pd.isna(next_lesson["zoom_code"]) and next_lesson["zoom_code"] != "Null":
                 text += f'Ідентифікатор Zoom: {next_lesson["zoom_code"]}\n'
             if not pd.isna(next_lesson["zoom_password"]) and next_lesson["zoom_password"] != "Null":
@@ -154,18 +184,18 @@ async def next_lesson(message: types.Message):
                 text += f'Telegram: {next_lesson["telegram"]}\n'
             await message.answer(text, parse_mode='HTML', disable_web_page_preview=True)
             print("Відправлено наступне повідомлення")
-        elif current_lesson is not None and (not pd.isna(current_lesson["Subject"]) and current_lesson["Subject"] != "Null"):
+        elif current_lesson is not None and (not pd.isna(current_lesson["subject"]) and current_lesson["subject"] != "Null"):
             text = (
                 f'Зараз пара: "<code>{subject}</code>"\n'
-                f'Викладач: <code>{current_lesson["Teacher"]}</code>\n'
+                f'Викладач: <code>{current_lesson["teacher"]}</code>\n'
                 f'Час: {time_start_current} - {time_end_current}\n'
             )
-            if not pd.isna(next_lesson["Type_lesson"]) and next_lesson["Type_lesson"] != "Null":
-                text += f'Тип пари: "<code>{next_lesson["Type_lesson"]}</code>"\n'
-            if not pd.isna(current_lesson["Additional Text"]) and current_lesson["Additional Text"] != "Null":
-                text += f'Додаткова інформація: "<code>{current_lesson["Additional Text"]}</code>"\n'
-            if not pd.isna(current_lesson["Meeting Link"]) and current_lesson["Meeting Link"] != "Null":
-                text += f'Посилання на зустріч: {current_lesson["Meeting Link"]}\n'
+            if not pd.isna(next_lesson["type_lesson"]) and next_lesson["type_lesson"] != "Null":
+                text += f'Тип пари: "<code>{next_lesson["type_lesson"]}</code>"\n'
+            if not pd.isna(current_lesson["additional_text"]) and current_lesson["additional_text"] != "Null":
+                text += f'Додаткова інформація: "<code>{current_lesson["additional_text"]}</code>"\n'
+            if not pd.isna(current_lesson["meeting_link"]) and current_lesson["meeting_link"] != "Null":
+                text += f'Посилання на зустріч: {current_lesson["meeting_link"]}\n'
             if not pd.isna(current_lesson["zoom_code"]) and current_lesson["zoom_code"] != "Null":
                 text += f'Ідентифікатор Zoom: {current_lesson["zoom_code"]}\n'
             if not pd.isna(current_lesson["zoom_password"]) and current_lesson["zoom_password"] != "Null":
@@ -184,16 +214,16 @@ async def next_lesson(message: types.Message):
 @dp.message_handler(commands=['daily_schedule'])
 async def daily_schedule(message: types.Message):
     week_day = datetime.now().isoweekday()
-    if week_day in df['Day of the week'].tolist():
-        todays_schedule = df[df['Day of the week'] == week_day]
+    if week_day in df['day_of_the_week'].tolist():
+        todays_schedule = df[df['day_of_the_week'] == week_day]
         is_even_week = get_week_number()
         schedule_text = f"Розклад на сьогодні ({'Чисельник' if is_even_week else 'Знаменник'}):\n"
         for _, row in todays_schedule.iterrows():
-            period = row['Period']
+            period = row['period']
             if period >= 1 and period <= len(lesson_times):
                 time_start, time_end = lesson_times[period - 1]
-                subject = row['Subject']
-                type_lesson = row['Type_lesson']
+                subject = row['subject']
+                type_lesson = row['type_lesson']
                 lesson_type = row['Type']
                 if pd.notna(type_lesson) and pd.notna(subject):
                     if ('Ч' in lesson_type and is_even_week) or ('З' in lesson_type and not is_even_week):
@@ -207,20 +237,20 @@ async def daily_schedule(message: types.Message):
 @dp.message_handler(commands=['week_schedule'])
 async def week_schedule(message: types.Message):
     week_day = datetime.now().isoweekday()
-    if week_day in df['Day of the week'].tolist():
+    if week_day in df['day_of_the_week'].tolist():
         is_even_week = get_week_number()
         week_schedule_text = f"Розклад на цей тиждень({'Знаменник' if is_even_week else 'Чисельник'}):\n\n"
         for day in range(1, 7):
             day_name = get_day_name(day)
-            todays_schedule = df[df['Day of the week'] == day]
+            todays_schedule = df[df['day_of_the_week'] == day]
             schedule_text = f"{day_name}:\n"
             for _, row in todays_schedule.iterrows():
-                period = row['Period']
+                period = row['period']
                 if period >= 1 and period <= len(lesson_times):
                     time_start, time_end = lesson_times[period - 1]
-                    subject = row['Subject']
+                    subject = row['subject']
                     lesson_type = row['Type']
-                    type_lesson = row['Type_lesson']
+                    type_lesson = row['type_lesson']
                     if (is_even_week and 'З' in lesson_type) or (not is_even_week and 'Ч' in lesson_type):
                         if pd.notna(subject):
                             schedule_text += f'{time_start} - {time_end}: {type_lesson} {subject}\n'

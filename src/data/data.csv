@@ -1,4 +1,4 @@
-Day of the week,Period,Type_lesson,Subject,Teacher,Meeting Link,zoom_code,zoom_password,link_to_platform,email,telegram,Additional Text,Type
+day_of_the_week,period,type_lesson,subject,teacher,meeting_link,zoom_code,zoom_password,link_to_platform,email,telegram,additional_text,Type
 1,1,B,Здоров’я зберігаючі технології та співдія функціональному розвитку,-,https://us02web.zoom.us/j/6398221750,6 398 221 750,2023,,,,,ЧЗ
 1,2,ПР,ЛАтаАГ,Щербина,,,,,,,,Ч
 1,2,,,,,,,,,,,З
