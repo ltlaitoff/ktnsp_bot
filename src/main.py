@@ -59,24 +59,6 @@ def get_lesson_message(
     return text
 
 
-async def send_lesson_notification(chat_id, lesson, time_start, time_end, text):
-    text_for_send = get_lesson_message(
-        time_start,
-        time_end,
-        lesson['subject'],
-        lesson['teacher'],
-        lesson['type_lesson'],
-        lesson['additional_text'],
-        lesson['meeting_link'],
-        lesson['zoom_code'],
-        lesson['zoom_password'],
-        lesson['email'],
-        lesson['telegram'],
-    )
-
-    await bot.send_message(chat_id=chat_id, text=text_for_send, parse_mode='HTML', disable_web_page_preview=True)
-
-
 async def check_lessons():
     while True:
         now = datetime.now()
@@ -116,7 +98,7 @@ async def check_lessons():
                                 row['telegram'],
                             )
 
-                            await send_lesson_notification(chat_id=CHAT_ID, lesson=row, time_start=time_start, time_end=time_end, text=text)
+                            await bot.send_message(chat_id=chat_id, text=text_for_send, parse_mode='HTML', disable_web_page_preview=True)
                             sent_notifications.add(lesson_key)
                             print(sent_notifications)
                             break
