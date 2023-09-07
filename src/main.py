@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 from os import getenv
 from config import bot, dp, schedule_file_path, lesson_times, CHAT_ID
 from helpers.get_week_number import get_week_number
+from helpers.get_day_name import get_day_name
 load_dotenv()
 
 loop = asyncio.get_event_loop()
@@ -218,13 +219,6 @@ async def week_schedule(message: types.Message):
         await message.answer(week_schedule_text)
     else:
         await message.answer('Розклад на цей тиждень ще не встановлено.')
-
-
-def get_day_name(day):
-    day_names = ['Понеділок', 'Вівторок',
-                 'Середа', 'Четвер', "П'ятниця", 'Субота']
-    return day_names[day - 1]
-
 
 if __name__ == '__main__':
     # asyncio.run(main())
