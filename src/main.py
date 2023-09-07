@@ -29,6 +29,7 @@ lesson_times = [
 
 CHAT_ID = -1001971949292
 
+
 def get_week_number():
     start_date = date(2023, 9, 4)  # Начало учебного года
     today = date.today()
@@ -37,6 +38,7 @@ def get_week_number():
     week_number = days_passed // 7  # Полное количество недель прошло
     is_even_week = week_number % 2 == 0  # 0 - знаменатель, 1 - числитель
     return is_even_week
+
 
 async def send_lesson_notification(chat_id, lesson, time_start, time_end, text):
     text = (
@@ -60,6 +62,7 @@ async def send_lesson_notification(chat_id, lesson, time_start, time_end, text):
         text += f'Telegram: {lesson["telegram"]}\n'
     await bot.send_message(chat_id=chat_id, text=text, parse_mode='HTML', disable_web_page_preview=True)
 
+
 async def check_lessons():
     while True:
         now = datetime.now()
@@ -73,7 +76,8 @@ async def check_lessons():
                 if period >= 1 and period <= len(lesson_times):
                     time_start, time_end = lesson_times[period - 1]
                     current_time = now.strftime('%H:%M')
-                    time_difference = datetime.strptime(time_start, '%H:%M') - datetime.strptime(current_time, '%H:%M')
+                    time_difference = datetime.strptime(
+                        time_start, '%H:%M') - datetime.strptime(current_time, '%H:%M')
                     if (
                         (time_difference <= timedelta(minutes=5))
                         and (time_start > current_time)
@@ -104,6 +108,7 @@ async def check_lessons():
         await asyncio.sleep(20)
 loop.create_task(check_lessons())
 
+
 @dp.message_handler(commands=['nextlesson'])
 async def next_lesson(message: types.Message):
     now = datetime.now()
@@ -125,8 +130,10 @@ async def next_lesson(message: types.Message):
             period = row['Period']
             if period >= 1 and period <= len(lesson_times):
                 time_start, time_end = lesson_times[period - 1]
-                start_datetime = datetime(current_year, current_month, current_day, *map(int, time_start.split(':')))
-                end_datetime = datetime(current_year, current_month, current_day, *map(int, time_end.split(':')))
+                start_datetime = datetime(
+                    current_year, current_month, current_day, *map(int, time_start.split(':')))
+                end_datetime = datetime(
+                    current_year, current_month, current_day, *map(int, time_end.split(':')))
                 if (('Ч' in str(row['Type']) and current_week_number == 0) or ('З' in str(row['Type']) and current_week_number == 1)):
                     if current_lesson is None and now >= start_datetime and now <= end_datetime:
                         current_lesson = row
@@ -211,6 +218,7 @@ async def daily_schedule(message: types.Message):
     else:
         await message.answer("Пар не має")
 
+
 @dp.message_handler(commands=['week_schedule'])
 async def week_schedule(message: types.Message):
     week_day = datetime.now().isoweekday()
@@ -236,9 +244,12 @@ async def week_schedule(message: types.Message):
     else:
         await message.answer('Розклад на цей тиждень ще не встановлено.')
 
+
 def get_day_name(day):
-    day_names = ['Понеділок', 'Вівторок', 'Середа', 'Четвер', "П'ятниця", 'Субота']
+    day_names = ['Понеділок', 'Вівторок',
+                 'Середа', 'Четвер', "П'ятниця", 'Субота']
     return day_names[day - 1]
+
 
 if __name__ == '__main__':
     # asyncio.run(main())
