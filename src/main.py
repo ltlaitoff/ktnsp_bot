@@ -6,27 +6,12 @@ from aiogram.contrib.middlewares.logging import LoggingMiddleware
 from aiogram.utils import executor
 from dotenv import load_dotenv
 from os import getenv
-from config import bot, dp
+from config import bot, dp, schedule_file_path, lesson_times, CHAT_ID
 load_dotenv()
 
 loop = asyncio.get_event_loop()
-schedule_file_path = 'src/data/data.csv'
 sent_notifications = set()
 df = pd.read_csv(schedule_file_path)
-
-lesson_times = [
-    ('08:30', '09:50'),
-    ('10:05', '11:25'),
-    ('11:55', '13:15'),
-    ('13:25', '14:45'),
-    ('14:55', '16:15'),
-    ('16:45', '18:05'),
-    ('18:15', '19:35'),
-    ('19:45', '21:05'),
-]
-
-# CHAT_ID = -1001971949292
-CHAT_ID = -657080651
 
 
 def get_week_number():
