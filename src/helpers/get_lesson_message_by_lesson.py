@@ -4,7 +4,8 @@ from helpers.get_lesson_message import get_lesson_message
 def get_lesson_message_by_lesson(
     time_start,
     time_end,
-    lesson
+    lesson,
+    custom_subject_name,
 ):
     return get_lesson_message(
         time_start,
@@ -18,4 +19,5 @@ def get_lesson_message_by_lesson(
         lesson['zoom_password'],
         lesson['email'],
         lesson['telegram'],
+        custom_subject_name,
     )

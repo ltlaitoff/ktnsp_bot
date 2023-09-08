@@ -13,9 +13,10 @@ def get_lesson_message(
     zoom_password,
     email,
     telegram,
+    custom_subject_name,
 ):
     text = (
-        f'Наступна пара: "<code>{subject}</code>"\n'
+        f'{custom_subject_name}: "<code>{subject}</code>"\n'
         f'Викладач: <code>{teacher}</code>\n'
         f'Час: {time_start} - {time_end}\n'
     )

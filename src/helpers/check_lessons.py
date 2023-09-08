@@ -45,7 +45,7 @@ async def check_lessons(sent_notifications):
                 text_for_send = get_lesson_message_by_lesson(
                     time_start,
                     time_end,
-                    row
+                    row,
                 )
 
                 await bot.send_message(chat_id=CHAT_ID, text=text_for_send, parse_mode='HTML', disable_web_page_preview=True)
