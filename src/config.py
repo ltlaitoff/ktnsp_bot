@@ -5,6 +5,7 @@ import pandas
 
 load_dotenv()
 
+LINK_TO_REP = 'https://github.com/ltlaitoff/ktnsp_bot'
 # 'dev' | 'prod'
 MODE = 'dev'
 
