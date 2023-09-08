@@ -6,6 +6,7 @@ from helpers.get_todays_schedule_iterrows import get_todays_schedule_iterrows
 
 def get_pairs_by_week_day(week_day):
     todays_schedule = get_todays_schedule_iterrows(week_day)
+    text = ''
 
     for _, row in todays_schedule:
         type_lesson = row['type_lesson']
@@ -22,3 +23,5 @@ def get_pairs_by_week_day(week_day):
             continue
 
         text += f'{time_start} - {time_end}: {type_lesson} {subject}\n'
+
+    return text
