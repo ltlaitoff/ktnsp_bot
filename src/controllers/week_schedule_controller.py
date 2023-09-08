@@ -1,9 +1,9 @@
-from datetime import datetime
-from config import DAY_NAMES, data, lesson_times
+from config import DAY_NAMES, lesson_times
 from helpers.check_lesson_on_week_not_compatibility import check_lesson_on_week_not_compatibility
 from helpers.check_week_day_in_data import check_week_day_in_data
 from helpers.get_current_week_day import get_current_week_day
-from helpers.check_is_even_week import check_is_even_week
+from helpers.get_lesson_type_text import get_lesson_type_text
+from helpers.get_todays_schedule_iterrows import get_todays_schedule_iterrows
 
 
 def week_schedule_controller():
@@ -12,22 +12,19 @@ def week_schedule_controller():
     if check_week_day_in_data(week_day):
         return 'Розклад на цей тиждень ще не встановлено.'
 
-    is_even_week = check_is_even_week()
-    week_text = f"Розклад на цей тиждень({'Знаменник' if is_even_week else 'Чисельник'}):\n\n"
+    week_text = f"Розклад на цей тиждень({get_lesson_type_text()}):\n\n"
 
     for day in range(1, 7):
-        todays_schedule = data[data['day_of_the_week'] == day]
+        todays_schedule = get_todays_schedule_iterrows(week_day)
         text = f"{DAY_NAMES[day - 1]}:\n"
 
-        for _, row in todays_schedule.iterrows():
+        for _, row in todays_schedule:
             time_start, time_end = lesson_times[row['period'] - 1]
             subject = row['subject']
-            lesson_type = row['type']
             type_lesson = row['type_lesson']
 
             if (check_lesson_on_week_not_compatibility(
-                is_even_week,
-                lesson_type,
+                row['type'],
                 subject
             )):
                 continue
