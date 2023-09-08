@@ -1,7 +1,7 @@
 from datetime import date
 
 
-def get_week_number():
+def check_is_even_week():
     start_date = date(2023, 9, 4)  # Начало учебного года
     today = date.today()
     delta = today - start_date

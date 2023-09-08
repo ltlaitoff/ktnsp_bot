@@ -1,20 +1,26 @@
 from os import getenv
 from dotenv import load_dotenv
-
 from aiogram import Bot, Dispatcher
+import pandas
 
 load_dotenv()
 
+LINK_TO_REP = 'https://github.com/ltlaitoff/ktnsp_bot'
 # 'dev' | 'prod'
-MODE = 'prod'
+MODE = 'dev'
 
+if (MODE == 'prod'):
+    CHAT_ID = getenv("CHAT_ID")
+    BOT_TOKEN = getenv("BOT_TOKEN")
+else:
+    CHAT_ID = getenv("DEV_CHAT_ID")
+    BOT_TOKEN = getenv("DEV_BOT_TOKEN")
 
-BOT_TOKEN = getenv("BOT_TOKEN")
 bot = Bot(token=BOT_TOKEN)
 dp = Dispatcher(bot)
 
-
 schedule_file_path = 'src/data/data.csv'
+data = pandas.read_csv(schedule_file_path)
 
 lesson_times = [
     ('08:30', '09:50'),
@@ -35,8 +41,3 @@ DAY_NAMES = [
     "П'ятниця",
     'Субота'
 ]
-
-if (MODE == 'prod'):
-    CHAT_ID = -1001971949292
-else:
-    CHAT_ID = -657080651
