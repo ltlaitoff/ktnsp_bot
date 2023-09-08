@@ -8,7 +8,7 @@ async def set_default_commands(dp):
         [
             types.BotCommand("start", "Запустить бота"),
             types.BotCommand("help", "Вывести справку"),
-            types.BotCommand("nextlesson", "nextlesson"),
+            types.BotCommand("next_lesson", "nextlesson"),
             types.BotCommand("daily_schedule", "daily_schedule"),
             types.BotCommand("week_schedule", "week_schedule"),
         ]

@@ -1,5 +1,6 @@
 from datetime import datetime
 from config import data, lesson_times
+from helpers.check_lesson_on_week_not_compatibility import check_lesson_on_week_not_compatibility
 from helpers.check_week_day_in_data import check_week_day_in_data
 from helpers.get_current_week_day import get_current_week_day
 from helpers.get_lesson_message_by_lesson import get_lesson_message_by_lesson
@@ -36,11 +37,11 @@ def next_lesson_controller():
         end_datetime = datetime(
             current_year, current_month, current_day, *map(int, time_end.split(':')))
 
-        if (
-            (not is_even_week and 'З' in lesson_type) or
-            (is_even_week and 'Ч' in lesson_type and not 'З' in lesson_type) or
-            not pandas.notna(row["subject"])
-        ):
+        if (check_lesson_on_week_not_compatibility(
+            is_even_week,
+            lesson_type,
+            row['subject']
+        )):
             continue
 
         if lesson is None and (now >= start_datetime and now <= end_datetime or now <= start_datetime):

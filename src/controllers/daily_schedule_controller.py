@@ -1,5 +1,6 @@
 import pandas
 from config import lesson_times
+from helpers.check_lesson_on_week_not_compatibility import check_lesson_on_week_not_compatibility
 from helpers.check_week_day_in_data import check_week_day_in_data
 from helpers.get_current_week_day import get_current_week_day
 from helpers.get_todays_schedule_iterrows import get_todays_schedule_iterrows
@@ -24,7 +25,16 @@ def daily_schedule_controller():
         type_lesson = row['type_lesson']
         lesson_type = row['type']
 
-        if pandas.notna(type_lesson) and pandas.notna(subject):
-            if ('Ч' in lesson_type and is_even_week) or ('З' in lesson_type and not is_even_week):
-                text += f'{time_start} - {time_end}: {type_lesson} {subject}\n'
+        if pandas.na(type_lesson):
+            continue
+
+        if (check_lesson_on_week_not_compatibility(
+            is_even_week,
+            lesson_type,
+            subject
+        )):
+            continue
+
+        text += f'{time_start} - {time_end}: {type_lesson} {subject}\n'
+
     return text
