@@ -7,7 +7,7 @@ load_dotenv()
 
 LINK_TO_REP = 'https://github.com/ltlaitoff/ktnsp_bot'
 # 'dev' | 'prod'
-MODE = 'dev'
+MODE = 'prod'
 
 if (MODE == 'prod'):
     CHAT_ID = getenv("CHAT_ID")
