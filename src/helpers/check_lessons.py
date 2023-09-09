@@ -5,14 +5,14 @@ import pandas
 from config import bot, CHAT_ID, lesson_times, data
 from helpers.get_lesson_message_by_lesson import get_lesson_message_by_lesson
 
-from helpers.check_is_even_week import check_is_even_week
+from helpers.get_current_week_type import get_current_week_type
 
 
 async def check_lessons(sent_notifications):
     while True:
         now = datetime.now()
         week_day = datetime.now().isoweekday()
-        current_week_number = check_is_even_week()
+        current_week_number = get_current_week_type()
 
         if not week_day in [1, 2, 3, 4, 5, 6]:
             continue
