@@ -4,7 +4,7 @@ from config import lesson_times
 from helpers.get_todays_schedule_iterrows import get_todays_schedule_iterrows
 
 
-def get_pairs_by_week_day(week_day):
+def get_pairs_by_week_day(week_day, next=False):
     todays_schedule = get_todays_schedule_iterrows(week_day)
     text = ''
 
@@ -18,7 +18,8 @@ def get_pairs_by_week_day(week_day):
 
         if (check_lesson_on_week_not_compatibility(
             row['type'],
-            subject
+            subject,
+            next
         )):
             continue
 

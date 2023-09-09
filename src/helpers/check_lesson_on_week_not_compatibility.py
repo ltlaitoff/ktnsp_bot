@@ -1,11 +1,14 @@
 import pandas
 
-from helpers.check_is_even_week import check_is_even_week
+from helpers.get_current_week_type import get_current_week_type
 
 
-def check_lesson_on_week_not_compatibility(lesson_type, subject):
-    is_even_week = check_is_even_week()
+def check_lesson_on_week_not_compatibility(lesson_type, subject, next=False):
+    current_week_type = get_current_week_type()
 
-    return ((not is_even_week and 'З' in lesson_type) or
-            (is_even_week and 'Ч' in lesson_type and not 'З' in lesson_type) or
+    if (next == True):
+        current_week_type = not current_week_type
+
+    return ((not current_week_type and 'З' in lesson_type) or
+            (current_week_type and 'Ч' in lesson_type and not 'З' in lesson_type) or
             pandas.isna(subject))
