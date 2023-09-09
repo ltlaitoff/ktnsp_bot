@@ -11,5 +11,6 @@ async def set_default_commands(dp):
             types.BotCommand("next_lesson", "nextlesson"),
             types.BotCommand("daily_schedule", "daily_schedule"),
             types.BotCommand("week_schedule", "week_schedule"),
+            types.BotCommand("next_week_schedule", "next_week_schedule"),
         ]
     )
