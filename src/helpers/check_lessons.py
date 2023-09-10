@@ -10,6 +10,8 @@ from helpers.get_current_week_type import get_current_week_type
 
 async def check_lessons(sent_notifications):
     while True:
+        await asyncio.sleep(25)
+
         now = datetime.now()
         week_day = datetime.now().isoweekday()
         current_week_number = get_current_week_type()
@@ -51,5 +53,3 @@ async def check_lessons(sent_notifications):
                 await bot.send_message(chat_id=CHAT_ID, text=text_for_send, parse_mode='HTML', disable_web_page_preview=True)
                 sent_notifications.add(lesson_key)
                 break
-
-        await asyncio.sleep(25)
