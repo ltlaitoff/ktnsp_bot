@@ -18,7 +18,7 @@ def next_lesson_controller():
     pair_now = False
 
     if check_week_day_in_data(week_day):
-        return
+        return 'Сьогодні неділя! Пар нема! 🏳️‍🌈'
 
     todays_schedule = get_todays_schedule_iterrows(week_day)
     lesson = None
