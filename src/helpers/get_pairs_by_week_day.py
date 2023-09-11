@@ -10,7 +10,8 @@ def get_pairs_by_week_day(week_day, next=False):
 
     for _, row in todays_schedule:
         type_lesson = row['type_lesson']
-        time_start, time_end = lesson_times[row['period'] - 1]
+        period = row['period']
+        time_start, time_end = lesson_times[period - 1]
         subject = row['subject']
 
         if pandas.isna(type_lesson):
@@ -23,6 +24,6 @@ def get_pairs_by_week_day(week_day, next=False):
         )):
             continue
 
-        text += f'{time_start} - {time_end}: {type_lesson} {subject}\n'
+        text += f'{period} ({time_start} - {time_end}): {type_lesson} {subject}\n'
 
     return text

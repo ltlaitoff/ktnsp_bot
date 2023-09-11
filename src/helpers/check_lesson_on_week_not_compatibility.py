@@ -9,6 +9,8 @@ def check_lesson_on_week_not_compatibility(lesson_type, subject, next=False):
     if (next == True):
         current_week_type = not current_week_type
 
-    return ((not current_week_type and 'З' in lesson_type) or
-            (current_week_type and 'Ч' in lesson_type and not 'З' in lesson_type) or
-            pandas.isna(subject))
+    first = (not current_week_type and 'З' in lesson_type and not 'Ч' in lesson_type)
+    second = (current_week_type and 'Ч' in lesson_type and not 'З' in lesson_type)
+    third = pandas.isna(subject)
+
+    return (first or second or third)
