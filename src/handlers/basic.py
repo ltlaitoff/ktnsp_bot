@@ -18,6 +18,7 @@ async def help(message: types.Message):
         '/daily_schedule - Всі пари на день\n' + \
         '/week_schedule - Всі пари на тиждень\n' + \
         '/next_week_schedule - Всі пари на наступний тиждень\n' + \
+        '/get_all - Вся інформація про викладачів та предмети\n' + \
         f'\nRepository - <a href="{LINK_TO_REP}">link</a>'
 
     await message.answer(text, parse_mode='HTML', disable_web_page_preview=True)

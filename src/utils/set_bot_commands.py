@@ -13,5 +13,6 @@ async def set_default_commands(dp):
             types.BotCommand("week_schedule", "Розклад на тиждень"),
             types.BotCommand("next_week_schedule",
                              "Розклад на наступний тиждень"),
+            types.BotCommand("get_all", "Показати всю інформацію")
         ]
     )
