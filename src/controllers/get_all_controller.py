@@ -33,7 +33,18 @@ def get_all_controller():
 
         type = 'Знаменник' if True else 'Чисельник'
 
-        text.append(f"🔔 Subject: {type_lesson} {subject}\n" +
+        if (type_lesson == "ЛК"):
+            smile_type = "🐦"
+        elif (type_lesson == "ЛБ"):
+            smile_type = "🐤"
+        elif (type_lesson == "ПР"):
+            smile_type = "🐧"
+        else:
+            smile_type = "🐔"
+
+        smile = "🧖🏿‍♀️" if subject == 'Л-МВ' else "🧖🏻‍♀️" if subject == 'ВТтаВД' else ""
+
+        text.append(f"🔔 Subject: {smile_type} {type_lesson} {smile} {subject}\n" +
                     getText("👨‍🏫 Teacher", teacher) +
                     getText("🔗 Meeting", meeting_link, "link") +
                     getText("🌵 Platform", link_to_platform, "link") +

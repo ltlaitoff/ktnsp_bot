@@ -1,18 +1,18 @@
 day_of_the_week,period,type_lesson,subject,teacher,meeting_link,zoom_code,zoom_password,link_to_platform,email,telegram,additional_text,type
 1,3,ЛК,АтаСД,Льовкін Валерій Миколайович,https://us04web.zoom.us/j/79660602873?pwd=Dd2sGFxKZNePIGtiA32VhpzlmrfyKx,,,https://classroom.google.com/c/NTQ1MTcwNjMzNDk4?cjc=nzfhv4b,,,,ЧЗ
-2,2,ЛБ,АтаСД,Дейнега Лариса Юріївна,http://meet.google.com/kwk-xiup-fvf,,,https://classroom.google.com/c/NjIwNjE0MDEwMzg3?cjc=poxobtb,deynega.larisa@gmail.com,"@Larysa_D ",,ЧЗ
 2,1,ЛБ,ВТтаВД,Леощенко Сергій Дмитрович,https://meet.google.com/igt-rmni-ftk,,,https://classroom.google.com/c/NjIwMjgxMjMxMjU5?cjc=3wvgqge,,,Вибіркова,ЧЗ
-3,2,ЛБ,ВТтаВД,Леощенко Сергій Дмитрович,https://meet.google.com/igt-rmni-ftk,,,https://classroom.google.com/c/NjIwMjgxMjMxMjU5?cjc=3wvgqge,,https://t.me/+txS3tbiwn8UzNmUy,Вибіркова,ЧЗ
-4,5,ЛБ,Л-МВ,Камінська Жанна Костянтинівна,"https://us02web.zoom.us/j/9061742629 ",9 061 742 629,651173,https://moodle.zp.edu.ua/course/view.php?id=20,,@ZhannaKaminska,Вибіркова,ЧЗ
-6,5,ЛК,Л-МВ,Сердюк Сергій Микитович,https://us04web.zoom.us/j/7235437806?pwd=T2lHS2NaOWkxN1J0UFRaOUU3YWR2QT09,,,https://moodle.zp.edu.ua/course/view.php?id=20,serdjuksn@gmail.com,,Вибіркова,ЧЗ
+2,2,ЛБ,АтаСД,Дейнега Лариса Юріївна,http://meet.google.com/kwk-xiup-fvf,,,https://classroom.google.com/c/NjIwNjE0MDEwMzg3?cjc=poxobtb,deynega.larisa@gmail.com,"@Larysa_D ",,ЧЗ
+2,3,ПР,УКвЄК,Спудка Ірина Миколаївна,https://meet.google.com/dez-uxij-jjb,,,https://moodle.zp.edu.ua/course/view.php?id=6200,rishaua@ukr.net,,,З
 2,4,ПР,ОПІ,Липовець Марина Володимирівна,https://us02web.zoom.us/j/5151534723,5151534723,152334,https://moodle.zp.edu.ua/course/view.php?id=335,alexander.j.katschan@gmail.com,,,З
 2,5,ЛБ,ОПІ,Качан Олександр Іванович,https://us02web.zoom.us/j/5151534723,5151534723,152334,https://moodle.zp.edu.ua/course/view.php?id=335,alexander.j.katschan@gmail.com,,,ЧЗ
-4,2,ЛК,ОПІ,Каплієнко Тетяна Ігорівна,https://us02web.zoom.us/j/71772651691,71772651691,2023,https://moodle.zp.edu.ua/course/view.php?id=335,bragina.zntu@gmail.com,https://t.me/KaplienkoT | https://t.me/+8fUD3ilvPfYzMzUy,,З
-4,1,ЛК,ППСУ,Орлянський,https://meet.google.com/xxj-pafm-zrg,,,,,,,Ч
-5,4,ПР,ППСУ,Орлянський,https://meet.google.com/xxj-pafm-zrg,,,,,,,Ч
 3,1,ПР,СР ВМ,undefined,,,,,,,,З
-5,2,ЛК,СР ВМ,undefined,,,,,,,,Ч
-2,3,ПР,УКвЄК,Спудка Ірина Миколаївна,https://meet.google.com/dez-uxij-jjb,,,https://moodle.zp.edu.ua/course/view.php?id=6200,rishaua@ukr.net,,,З
-4,1,ЛК,УКвЄК,Георгий Шаповалов,https://meet.google.com/kuc-ztvv-kvx,,,https://moodle.zp.edu.ua/course/view.php?id=6200,,,,З
+3,2,ЛБ,ВТтаВД,Леощенко Сергій Дмитрович,https://meet.google.com/igt-rmni-ftk,,,https://classroom.google.com/c/NjIwMjgxMjMxMjU5?cjc=3wvgqge,,https://t.me/+txS3tbiwn8UzNmUy,Вибіркова,ЧЗ
 3,3,ЛК,УМПС,Біленко,,,,,,https://t.me/+k-2nrf6O19Y2YWRi,,Ч
 3,4,ПР,УМПС,Біленко,,,,,,https://t.me/+k-2nrf6O19Y2YWRi,,З
+4,1,ЛК,ППСУ,Орлянський,https://meet.google.com/xxj-pafm-zrg,,,,,,,Ч
+4,1,ЛК,УКвЄК,Георгий Шаповалов,https://meet.google.com/kuc-ztvv-kvx,,,https://moodle.zp.edu.ua/course/view.php?id=6200,,,,З
+4,2,ЛК,ОПІ,Каплієнко Тетяна Ігорівна,https://us02web.zoom.us/j/71772651691,71772651691,2023,https://moodle.zp.edu.ua/course/view.php?id=335,bragina.zntu@gmail.com,https://t.me/KaplienkoT | https://t.me/+8fUD3ilvPfYzMzUy,,З
+4,5,ЛБ,Л-МВ,Камінська Жанна Костянтинівна,"https://us02web.zoom.us/j/9061742629 ",9 061 742 629,651173,https://moodle.zp.edu.ua/course/view.php?id=20,,@ZhannaKaminska,Вибіркова,ЧЗ
+5,2,ЛК,СР ВМ,undefined,,,,,,,,Ч
+5,4,ПР,ППСУ,Орлянський,https://meet.google.com/xxj-pafm-zrg,,,,,,,Ч
+6,5,ЛК,Л-МВ,Сердюк Сергій Микитович,https://us04web.zoom.us/j/7235437806?pwd=T2lHS2NaOWkxN1J0UFRaOUU3YWR2QT09,,,https://moodle.zp.edu.ua/course/view.php?id=20,serdjuksn@gmail.com,,Вибіркова,ЧЗ

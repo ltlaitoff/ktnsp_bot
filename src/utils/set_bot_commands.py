@@ -10,6 +10,8 @@ async def set_default_commands(dp):
             types.BotCommand("help", "Показати справку"),
             types.BotCommand("next_lesson", "Наступна пара сьогодні"),
             types.BotCommand("daily_schedule", "Пари на день"),
+            types.BotCommand("daily_schedule_detailed",
+                             "Пари на день детально"),
             types.BotCommand("week_schedule", "Розклад на тиждень"),
             types.BotCommand("next_week_schedule",
                              "Розклад на наступний тиждень"),

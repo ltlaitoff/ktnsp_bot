@@ -16,6 +16,7 @@ async def help(message: types.Message):
     text = 'Всі команди:\n' + \
         '/next_lesson - Наступна пара\n' + \
         '/daily_schedule - Всі пари на день\n' + \
+        '/daily_schedule_detailed - Пари на день детально\n' + \
         '/week_schedule - Всі пари на тиждень\n' + \
         '/next_week_schedule - Всі пари на наступний тиждень\n' + \
         '/get_all - Вся інформація про викладачів та предмети\n' + \
