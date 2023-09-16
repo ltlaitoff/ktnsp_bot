@@ -55,7 +55,7 @@ def next_lesson_controller():
             time_start,
             time_end,
             lesson,
-            'Зараз пара' if pair_now else 'Наступна пара',
+            '<u><b>Зараз пара</b></u>' if pair_now else 'Наступна пара',
         )
 
         return text_for_send
