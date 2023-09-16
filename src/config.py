@@ -41,3 +41,6 @@ DAY_NAMES = [
     "П'ятниця",
     'Субота'
 ]
+
+TIMER_DELAY = 20
+TIMER_LONG_DELAY = 330
