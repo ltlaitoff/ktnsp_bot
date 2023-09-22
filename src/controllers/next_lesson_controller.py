@@ -60,4 +60,4 @@ def next_lesson_controller():
 
         return text_for_send
 
-    return 'Сьогодні пар більше не має.'
+    return 'Сьогодні пар більше немає.'
